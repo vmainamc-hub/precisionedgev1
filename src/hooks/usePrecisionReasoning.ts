@@ -121,6 +121,11 @@ export function usePrecisionReasoning(settings: PrecisionSettings = DEFAULT_SETT
         // Quality filter: only READY verdicts fire signals — WATCH/BUILDING
         // are exploratory and were historically responsible for losses.
         if (v.state !== "READY") continue;
+        // ── V3.5 adjustable analyst caps ──────────────────────────────
+        // Hard gates the operator can tune from the Settings drawer.
+        if (m.psychology.manipulation >= s.maxManipulation) continue;
+        if (v.edge * 100 < s.minEdgePct) continue;
+        if (v.persistenceTicks < s.minPersistenceTicks) continue;
         // Scanner mindset applies to ALL over/under contracts as a soft gate.
         // A verdict may only fire when the mindset gate is present AND ok
         // (≥5/7 sub-conditions aligned). Missing mindset gate = non-family
