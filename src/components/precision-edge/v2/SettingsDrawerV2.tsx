@@ -186,6 +186,28 @@ export function SettingsDrawerV2({
 
           <div className="space-y-4 pt-2 border-t border-border/40">
             <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              Signal quality caps
+            </div>
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              Hard gates the analyst must clear before firing a signal. Tighter caps mean
+              fewer, higher-quality trades — and more comfortable NO TRADE outcomes.
+            </p>
+            <Row label="Max manipulation" value={`${settings.maxManipulation}%`}>
+              <Slider min={5} max={60} step={1} value={[settings.maxManipulation]}
+                onValueChange={([v]) => patch({ maxManipulation: v })} />
+            </Row>
+            <Row label="Min persistence (winning streak)" value={`${settings.minPersistenceTicks} ticks`}>
+              <Slider min={0} max={12} step={1} value={[settings.minPersistenceTicks]}
+                onValueChange={([v]) => patch({ minPersistenceTicks: v })} />
+            </Row>
+            <Row label="Min edge over fair" value={`${settings.minEdgePct.toFixed(1)}%`}>
+              <Slider min={0} max={8} step={0.1} value={[settings.minEdgePct]}
+                onValueChange={([v]) => patch({ minEdgePct: v })} />
+            </Row>
+          </div>
+
+          <div className="space-y-4 pt-2 border-t border-border/40">
+            <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
               Reasoning (V3)
             </div>
             <Row label="Fluctuation tolerance" value={settings.fluctuationTolerance.toFixed(2)}>
