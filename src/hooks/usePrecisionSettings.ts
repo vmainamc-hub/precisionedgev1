@@ -38,6 +38,11 @@ export interface PrecisionSettings {
   historicalAgreementMin: number; // 0..1
   migrationStabilityMin: number;  // 0..1
   patternSimilarityBoost: number; // 0..1
+  // ── Adjustable signal-quality caps (V3.5) ───────────────────────────
+  // Hard gates the analyst must satisfy before a signal can fire.
+  maxManipulation: number;        // reject when psy.manipulation ≥ this (0-100)
+  minEdgePct: number;             // reject when contract edge < this (percentage points, e.g. 1.2 = 1.2%)
+  minPersistenceTicks: number;    // reject when trailing winning streak < this
 }
 
 export const CONTRACT_LABELS: Record<ContractKey, string> = {
@@ -101,6 +106,9 @@ export const DEFAULT_SETTINGS: PrecisionSettings = {
   historicalAgreementMin: 0.58,
   migrationStabilityMin: 0.55,
   patternSimilarityBoost: 0.15,
+  maxManipulation: 26,
+  minEdgePct: 1.2,
+  minPersistenceTicks: 2,
 };
 
 const STORAGE_KEY = "precision-edge-v2-settings";
