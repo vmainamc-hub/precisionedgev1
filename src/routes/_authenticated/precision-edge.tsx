@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Brain, Wifi, Activity, Radar, Settings as SettingsIcon, Timer } from "lucide-react";
+import { ArrowLeft, Brain, Wifi, Activity, Radar, Settings as SettingsIcon, Timer, ShieldOff } from "lucide-react";
 import { usePrecisionReasoning } from "@/hooks/usePrecisionReasoning";
 import { usePrecisionSettings } from "@/hooks/usePrecisionSettings";
 import { BestTradePanel } from "@/components/precision-edge/v2/BestTradePanel";
@@ -152,6 +152,9 @@ function PrecisionEdgeV2() {
         )}
 
         <BestTradePanel best={heldMarket} />
+        {!held && scan.markets.length > 0 && (
+          <NoTradeBanner scan={scan} settings={settings} />
+        )}
         <RankingTable scan={scan} />
         <JournalPanel />
       </main>
@@ -166,6 +169,66 @@ function PrecisionEdgeV2() {
         toggleBot={toggleBot}
         reset={reset}
       />
+    </div>
+  );
+}
+
+function NoTradeBanner({
+  scan,
+  settings,
+}: {
+  scan: ReturnType<typeof usePrecisionReasoning>;
+  settings: ReturnType<typeof usePrecisionSettings>["settings"];
+}) {
+  // Surface the analyst's honest verdict when no hypothesis survives scrutiny.
+  // Aggregate the dominant contradictions across every evaluated market so the
+  // operator sees WHY nothing was recommended and what would unlock a trade.
+  const reasons = new Map<string, number>();
+  let bestConfidence = 0;
+  let worstManip = 0;
+  for (const m of scan.markets) {
+    worstManip = Math.max(worstManip, m.psychology.manipulation);
+    for (const v of m.verdicts) {
+      bestConfidence = Math.max(bestConfidence, v.confidence);
+      for (const c of v.conflicts ?? []) reasons.set(c, (reasons.get(c) ?? 0) + 1);
+      if (v.rejection) reasons.set(v.rejection, (reasons.get(v.rejection) ?? 0) + 1);
+    }
+  }
+  const top = [...reasons.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4).map(([r]) => r);
+  const waitingFor: string[] = [];
+  if (worstManip >= settings.maxManipulation) waitingFor.push(`Manipulation below ${settings.maxManipulation}%`);
+  if (bestConfidence < settings.threshold) waitingFor.push(`Confidence above ${settings.threshold}`);
+  waitingFor.push(`Winning streak ≥ ${settings.minPersistenceTicks} ticks`);
+  waitingFor.push(`Edge ≥ ${settings.minEdgePct.toFixed(1)}% over fair`);
+
+  return (
+    <div className="rounded-xl border border-warn/30 bg-warn/[0.05] p-4">
+      <div className="flex items-center gap-2 text-warn">
+        <ShieldOff className="w-4 h-4" />
+        <span className="text-xs font-semibold uppercase tracking-[0.25em]">No trade</span>
+      </div>
+      <p className="mt-2 text-sm text-foreground leading-relaxed">
+        No hypothesis survives the analyst's evidence review. The engine is comfortable
+        waiting — its objective is decision quality, not signal frequency.
+      </p>
+      {top.length > 0 && (
+        <div className="mt-3">
+          <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground mb-1">
+            Contradictions
+          </div>
+          <ul className="space-y-1 text-xs text-muted-foreground">
+            {top.map((r, i) => <li key={i}>• {r}</li>)}
+          </ul>
+        </div>
+      )}
+      <div className="mt-3">
+        <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground mb-1">
+          Waiting for
+        </div>
+        <ul className="space-y-1 text-xs text-muted-foreground">
+          {waitingFor.map((r, i) => <li key={i}>✓ {r}</li>)}
+        </ul>
+      </div>
     </div>
   );
 }
