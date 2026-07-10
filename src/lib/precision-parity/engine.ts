@@ -21,7 +21,7 @@ import type {
 const WINDOWS = [20, 50, 100, 200, 500, 1000] as const;
 const clamp = (v: number, lo = 0, hi = 100) => Math.max(lo, Math.min(hi, v));
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
-const parityOf = (d: number) => (d % 2 === 0 ? "EVEN" : "ODD") as const;
+const parityOf = (d: number): "EVEN" | "ODD" => (d % 2 === 0 ? "EVEN" : "ODD");
 
 // Per-market session memory (parity history + prior recommendations).
 interface SessionMemory {
