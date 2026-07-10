@@ -19,6 +19,7 @@ const groups: { label: string; items: NavItem[] }[] = [
     items: [
       { title: "Dashboard", url: "/app/dashboard", icon: LayoutDashboard },
       { title: "Precision Edge V2", url: "/precision-edge", icon: Cpu },
+      { title: "Precision Parity AI", url: "/precision-parity", icon: Brain },
     ],
   },
   {

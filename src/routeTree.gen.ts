@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedPrecisionParityRouteImport } from './routes/_authenticated/precision-parity'
 import { Route as AuthenticatedPrecisionEdgeRouteImport } from './routes/_authenticated/precision-edge'
 import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
@@ -48,6 +49,12 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedPrecisionParityRoute =
+  AuthenticatedPrecisionParityRouteImport.update({
+    id: '/precision-parity',
+    path: '/precision-parity',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedPrecisionEdgeRoute =
   AuthenticatedPrecisionEdgeRouteImport.update({
     id: '/precision-edge',
@@ -171,6 +178,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/app': typeof AuthenticatedAppRouteWithChildren
   '/precision-edge': typeof AuthenticatedPrecisionEdgeRoute
+  '/precision-parity': typeof AuthenticatedPrecisionParityRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/app/auto-trading': typeof AuthenticatedAppAutoTradingRoute
@@ -195,6 +203,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/precision-edge': typeof AuthenticatedPrecisionEdgeRoute
+  '/precision-parity': typeof AuthenticatedPrecisionParityRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/app/auto-trading': typeof AuthenticatedAppAutoTradingRoute
@@ -221,6 +230,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
   '/_authenticated/precision-edge': typeof AuthenticatedPrecisionEdgeRoute
+  '/_authenticated/precision-parity': typeof AuthenticatedPrecisionParityRoute
   '/_authenticated/app/admin': typeof AuthenticatedAppAdminRoute
   '/_authenticated/app/analytics': typeof AuthenticatedAppAnalyticsRoute
   '/_authenticated/app/auto-trading': typeof AuthenticatedAppAutoTradingRoute
@@ -248,6 +258,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/app'
     | '/precision-edge'
+    | '/precision-parity'
     | '/app/admin'
     | '/app/analytics'
     | '/app/auto-trading'
@@ -272,6 +283,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/precision-edge'
+    | '/precision-parity'
     | '/app/admin'
     | '/app/analytics'
     | '/app/auto-trading'
@@ -297,6 +309,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/app'
     | '/_authenticated/precision-edge'
+    | '/_authenticated/precision-parity'
     | '/_authenticated/app/admin'
     | '/_authenticated/app/analytics'
     | '/_authenticated/app/auto-trading'
@@ -346,6 +359,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/precision-parity': {
+      id: '/_authenticated/precision-parity'
+      path: '/precision-parity'
+      fullPath: '/precision-parity'
+      preLoaderRoute: typeof AuthenticatedPrecisionParityRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/precision-edge': {
       id: '/_authenticated/precision-edge'
@@ -560,11 +580,13 @@ const AuthenticatedAppRouteWithChildren =
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAppRoute: typeof AuthenticatedAppRouteWithChildren
   AuthenticatedPrecisionEdgeRoute: typeof AuthenticatedPrecisionEdgeRoute
+  AuthenticatedPrecisionParityRoute: typeof AuthenticatedPrecisionParityRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAppRoute: AuthenticatedAppRouteWithChildren,
   AuthenticatedPrecisionEdgeRoute: AuthenticatedPrecisionEdgeRoute,
+  AuthenticatedPrecisionParityRoute: AuthenticatedPrecisionParityRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
