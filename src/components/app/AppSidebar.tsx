@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Radar, TrendingUp, Hash, Layers, Radio, LineChart, Bot, Library,
-  Activity, BookOpen, Newspaper, Settings, Shield, LogOut, Cpu,
+  Activity, BookOpen, Newspaper, Settings, Shield, LogOut, Cpu, Brain,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
